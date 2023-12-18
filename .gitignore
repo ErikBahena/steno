@@ -1,0 +1,21 @@
+# System files
+.DS_Store
+
+# Node modules
+node_modules/
+node_modules/*  
+./node_modules/*  
+
+
+# Environment variables
+.env
+
+# Ignore the instance folder and its contents
+instance/
+instance/*  # This line is redundant and can be removed
+
+# Python cache files
+__pycache__/
+
+# Virtual environment
+venv/

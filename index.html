@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transcription Service</title>
+    <!-- Tailwind CSS CDN -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <style>
+    body {
+        font-family: 'Roboto', sans-serif;
+    }
+  </style>
+  <body class="bg-gray-100 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-black bg-opacity-90 p-5 shadow-lg">
+        <div class="container mx-auto">
+            <div class="flex items-center justify-between">
+                <h1 class="text-3xl font-extrabold text-white tracking-tighter">Steno</h1>
+                <ul class="flex items-center space-x-6">
+                    <li><a href="#" class="text-white hover:text-blue-400 transition duration-200">Home</a></li>
+                    <li><a href="#" class="text-white hover:text-blue-400 transition duration-200">Features</a></li>
+                    <li><a href="#" class="text-white hover:text-blue-400 transition duration-200">Pricing</a></li>
+                    <li><a href="#" class="text-white hover:text-blue-400 transition duration-200">Contact</a></li>
+                    <li>
+                        <button id="nav-auth-text" href="#" class="py-2 px-5 bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600 text-white font-semibold rounded-full transition duration-200 shadow-md">
+                            Login
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Center Main -->
+    <main class="flex justify-center container mx-auto">
+
+    <div id="login-screen" class="flex items-center justify-center py-12 sm:py-8 md:py-12 lg:py-14 bg-gray-100">
+        <div class="bg-white p-8 rounded-sm shadow-md w-96">
+            <h2 class="text-2xl font-semibold mb-4 text-center">Login</h2>
+            <div class="mb-4 relative">
+                <label for="login-username" class="block text-gray-600 text-sm font-medium mb-2">Username:</label>
+                <input type="text" autocomplete="username" value="testuser" id="login-username" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-400" placeholder="Enter username">
+                <i class="absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400 fas fa-user"></i>
+            </div>
+            <div class="mb-4 relative">
+                <label for="login-password" class="block text-gray-600 text-sm font-medium mb-2">Password:</label>
+                <input type="password" value="testuser" autocomplete="current-password" id="login-password" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-400" placeholder="Enter password">
+                <i class="absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400 fas fa-lock"></i>
+            </div>
+            <button id="login-btn" class="w-full bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600 text-white font-semibold rounded transition duration-200 shadow-md py-2 px-4">
+                Login
+            </button>
+            <p class="mt-4 text-center">
+                Don't have an account? 
+                <a href="#" id="show-register" class="text-blue-600 hover:underline">Register</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Register Screen -->
+    <div id="register-screen" class="container mx-auto p-4 mt-6 hidden">
+      <h2 class="text-xl font-semibold mb-4">Register</h2>
+      <div class="mb-4">
+        <label
+          for="register-username"
+          class="block text-gray-700 text-sm font-bold mb-2"
+          >Username:</label
+        >
+        <input
+          type="text"
+          autocomplete="username"
+          id="register-username"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        />
+      </div>
+      <div class="mb-4">
+        <label
+          for="register-password"
+          class="block text-gray-700 text-sm font-bold mb-2"
+          >Password:</label
+        >
+        <input
+          type="password"
+          autocomplete="new-password"
+          id="register-password"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        />
+      </div>
+      <button
+        id="register-btn"
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Register
+      </button>
+      <p class="mt-4">
+        Already have an account?
+        <a href="#" id="show-login" class="text-blue-600">Login</a>
+      </p>
+    </div>
+
+    <!-- Main Content -->
+    <div id="dashboard" class="container mx-auto p-4 mt-6 hidden">
+      <!-- File Upload Area -->
+      <div class="mb-4">
+        <label
+          class="block text-gray-700 text-sm font-bold mb-2"
+          for="file-upload"
+        >
+          Upload your audio file (mp3, mp4, or wav):
+        </label>
+        <input
+          type="file"
+          id="file-upload"
+          accept=".mp3,.mp4,.wav,.mov"
+          class="mb-2"
+        />
+        <button
+          id="upload-btn"
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Start Transcription
+        </button>
+      </div>
+
+      <!-- Real-time Progress Bar -->
+      <div class="mb-4">
+        <h2 class="text-lg font-semibold mb-2">Transcription Progress:</h2>
+        <div class="relative pt-1">
+          <div class="flex mb-2 items-center justify-between">
+            <div class="text-right">
+              <span
+                class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-blue-600 bg-blue-200"
+                id="progress-percentage"
+              >
+                0%
+              </span>
+            </div>
+          </div>
+          <div
+            class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-blue-100"
+          >
+            <div
+              style="width: 0%"
+              class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"
+              id="progress-bar"
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="output-panel" class="flex flex-wrap mt-6 hidden">
+        <!-- Left Column: Transcription with Timestamps -->
+        <div id="transcription-column" class="w-full md:w-1/2 p-4">
+          <h2 class="text-lg font-semibold mb-2">Transcription:</h2>
+          <div id="transcription-output-lbl">
+            <!-- Placeholder for transcription data with clickable timestamps -->
+            <!-- Example:
+                <div class="transcription-line mb-2">
+                    <a href="#" data-time="0" class="timestamp">00:00:01</a> - Sample text from transcription...
+                </div>
+                -->
+          </div>
+        </div>
+
+        <!-- Right Column: Video Preview -->
+        <div class="w-full md:w-1/2 p-4">
+          <h2 class="text-lg font-semibold mb-2">Preview:</h2>
+          <video
+            id="video-preview"
+            controls
+            class="w-full aspect-w-16 aspect-h-9"
+          >
+            <!-- Placeholder for video src -->
+            <!-- <source src="path_to_video.mp4" type="video/mp4"> -->
+          </video>
+          <div class="flex gap-2">
+          <!-- <button
+            id="download-burned-video-btn"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
+            disabled
+          >
+            Download Video with Transcription
+          </button> -->
+
+            <button
+              id="copy-btn"
+              class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded mt-4"
+            >
+              Copy To Clipboard
+            </button>
+            <button
+              id="download-btn"
+              class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded mt-4"
+            >
+              Download Vtt
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</main>
+
+
+    <!-- Include Socket.io client library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+
+    <script>
+      // Connect to the Socket.io server
+      const SERVER_URL = 'http://127.0.0.1:5000';
+      const socket = io.connect(SERVER_URL);
+      let webVttResult = null;
+
+      // Handle real-time updates
+      socket.on('transcription_update', function (data) {
+        let progressBar = document.getElementById('progress-bar');
+        let progressPercentage = document.getElementById('progress-percentage');
+
+        progressBar.style.width = `${data.progress}%`;
+        progressPercentage.innerText = `${data.progress}%`;
+
+        if (data.progress === 100) {
+          progressPercentage.classList.remove('text-blue-600');
+          progressPercentage.classList.remove('bg-blue-200');
+          progressPercentage.classList.add('text-green-600');
+          progressPercentage.classList.add('bg-green-100');
+
+          progressBar.classList.remove('bg-blue-500');
+          progressBar.classList.add('bg-green-500');
+        }
+      });
+
+      socket.on('transcription_result', function (data) {
+        webVttResult = data.result;
+        document.getElementById('output-panel').classList.remove('hidden');
+
+        const segments = data.segments;
+        const htmlSegments = segments.map((segment) => {
+          const ssToHMS = (ss) => {
+            let date = new Date(null);
+            date.setSeconds(ss);
+            return date.toISOString().substr(11, 8);
+          };
+
+          return `<div id="transcription-line" data-time="${segment.start}" class="flex flex-wrap mb-2 bg-gray-100 hover:bg-gray-200 cursor-pointer border border-gray-300 rounded p-0.5">
+                    <a href="#" data-time="${segment.start}" class="timestamp font-light">[${ssToHMS(segment.start)} - ${ssToHMS(segment.end)}]</a>
+                    &nbsp;-&nbsp; 
+                    <div class="flex-1" data-time="${segment.start}">${segment.text}</div>
+                 </div>`;
+        });
+
+        // add these timestamps to the transcription output lbl
+        let transcriptionOutputLbl = document.getElementById(
+          'transcription-output-lbl',
+        );
+
+        transcriptionOutputLbl.innerHTML = htmlSegments.join('');
+
+        // Update the video preview src to the uploaded file 
+        let videoPreview = document.getElementById('video-preview');
+
+        let fileInput = document.getElementById('file-upload');
+        let file = fileInput.files[0];
+        videoPreview.src = URL.createObjectURL(file);
+        videoPreview.type = file.type;
+
+        // Add click listeners to the timestamps
+        let timestamps = document.querySelectorAll('#transcription-line')
+        for (let i = 0; i < timestamps.length; i++) {
+          timestamps[i].addEventListener('click', function (e) {
+            e.preventDefault();
+
+            let timestamp = e.target.dataset.time;
+            videoPreview.currentTime = parseFloat(timestamp);
+            videoPreview.play();
+          });
+        }
+
+        // set the text track for the video
+        let trackElement = document.createElement('track');
+        trackElement.kind = 'captions';
+        trackElement.srclang = 'en';
+        trackElement.label = 'English';
+        trackElement.default = true;
+        trackElement.src = "data:text/vtt;base64," + btoa(webVttResult);
+
+        videoPreview.appendChild(trackElement);
+      });
+
+      document
+        .getElementById('upload-btn')
+        .addEventListener('click', function (e) {
+          e.preventDefault();
+
+          let fileInput = document.getElementById('file-upload');
+          if (fileInput.files.length === 0) {
+            alert('Please select a file to upload.');
+            return;
+          }
+
+          let file = fileInput.files[0];
+          let formData = new FormData();
+          formData.append('file', file);
+
+          fetch(`${SERVER_URL}/start_transcription`, {
+            method: 'POST',
+            body: formData,
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem(
+                'steno_access_token',
+              )}`,
+            },
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log(data);
+              if (data.msg === 'Missing Authorization Header') {
+                alert('Please login to start transcription.');
+                return;
+              }
+            })
+            .catch((error) => {
+              alert('Error starting transcription. Please try again.');
+            });
+        });
+
+      // login listener
+      document
+        .getElementById('login-btn')
+        .addEventListener('click', function (e) {
+          e.preventDefault();
+
+          let username = document.getElementById('login-username').value;
+          let password = document.getElementById('login-password').value;
+
+          fetch(`${SERVER_URL}/login`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              username: username,
+              password: password,
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.access_token) {
+                // Successful login
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+                document.getElementById('nav-auth-text').innerText = 'Logout';
+
+                // save the access token in local storage
+                localStorage.setItem('steno_access_token', data.access_token);
+              } else {
+                alert('Login failed. Please check your credentials.');
+              }
+            });
+        });
+
+      document
+        .getElementById('show-register')
+        .addEventListener('click', function (e) {
+          e.preventDefault();
+          document.getElementById('login-screen').classList.add('hidden');
+          document.getElementById('register-screen').classList.remove('hidden');
+        });
+
+      document
+        .getElementById('show-login')
+        .addEventListener('click', function (e) {
+          e.preventDefault();
+          document.getElementById('register-screen').classList.add('hidden');
+          document.getElementById('login-screen').classList.remove('hidden');
+        });
+
+      // register listener
+      document
+        .getElementById('register-btn')
+        .addEventListener('click', function (e) {
+          e.preventDefault();
+          let username = document.getElementById('register-username').value;
+          let password = document.getElementById('register-password').value;
+
+          fetch(`${SERVER_URL}/register`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              username,
+              password,
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.access_token) {
+                // Successful login
+                document.getElementById('register-screen').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+                document.getElementById('nav-auth-text').innerText = 'Logout';
+
+                // save the access token in local storage
+                localStorage.setItem('steno_access_token', data.access_token);
+              } else {
+                alert('Login failed. Please check your credentials.');
+              }
+            });
+        });
+
+      // Function to copy the transcription output to the clipboard
+      document
+        .getElementById('copy-btn')
+        .addEventListener('click', function () {
+          let transcriptionOutput = document.getElementById(
+            'transcription-output',
+          );
+
+          if (transcriptionOutput.value.length === 0) {
+            alert('Please start transcription first.');
+            return;
+          }
+
+          transcriptionOutput.select();
+          document.execCommand('copy');
+
+          alert('Copied to clipboard!'); // Replace with your success animation
+        });
+
+      // Function to download the transcription output as a VTT file
+      document
+        .getElementById('download-btn')
+        .addEventListener('click', function (e) {
+          let blob = new Blob([webVttResult], {type: "text/vtt"});
+
+
+          if (blob.size === 0) {
+            alert('Please start transcription first.');
+            return;
+          }
+
+          let link = document.createElement('a');
+          link.href = window.URL.createObjectURL(blob);
+          link.download = 'transcription.vtt';
+          link.click();
+        });
+
+        // Function to logout from the nav bar
+        document
+        .getElementById('nav-auth-text')
+        .addEventListener('click', function (e) {
+          e.preventDefault();
+
+          if (localStorage.getItem('steno_access_token')) {
+            // logout
+            localStorage.removeItem('steno_access_token');
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('nav-auth-text').innerText = 'Login';
+          } else {
+            // login
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('register-screen').classList.add('hidden');
+          }
+        });
+    </script>
+  </body>
+</html>
